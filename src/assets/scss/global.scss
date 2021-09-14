@@ -1,0 +1,23 @@
+html, body {
+  overflow-x: hidden;
+}
+body {
+  position: relative
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+button:hover {
+  cursor: pointer;
+  opacity: var(--hover-opacity);
+}
+
+a {
+  cursor: pointer;
+}
+a:visited {
+  color: var(--main-black);
+}
