@@ -17,7 +17,7 @@ export class DamBoardHelper {
 			);
 	}
 
-	getDamStonesForNewGameState(areStonesInTopRowsBlack = false): DamStone[] {
+	getDamStonesForNewGameState(areStonesInTopRowsWhite = false): DamStone[] {
 		const damStones = [];
 
 		for(const damboardRowNumber of Array(this.getNumberOfTilesPerBoardRow()).keys()){
@@ -33,12 +33,12 @@ export class DamBoardHelper {
 							damboardTileInRow
 						);
 
-						const isDamStoneBlack = areStonesInTopRowsBlack ? true : false;
+						const isDamStoneWhite = areStonesInTopRowsWhite ? true : false;
 
 						const damStone = new DamStone(
 							damStoneCoordinate,
 							false,
-							isDamStoneBlack
+							isDamStoneWhite
 						);
 
 						damStones.push(damStone);
@@ -55,12 +55,12 @@ export class DamBoardHelper {
 							damboardTileInRow
 						);
 
-						const isDamStoneBlack = areStonesInTopRowsBlack ? false : true;
+						const isDamStoneWhite = areStonesInTopRowsWhite ? false : true;
 
 						const damStone = new DamStone(
 							damStoneCoordinate,
 							false,
-							isDamStoneBlack
+							isDamStoneWhite
 						);
 
 						damStones.push(damStone);
@@ -84,5 +84,66 @@ export class DamBoardHelper {
 		});
 		
 		return damStoneIfAvailable;
+	}
+
+	getListOfCoordinatesOneStepFromCurrentCoordinate(coordinate: DamStoneCoordinate): DamStoneCoordinate[] {
+		const listOfCoordinates: DamStoneCoordinate[] = [];
+		const directions = [-1, 1];
+
+		directions.forEach((horizontalDirector: number) => {
+			directions.forEach((verticalDirector: number) => {
+				const coordinateOneStepFromCurrent = new DamStoneCoordinate(
+					coordinate?.xPositionFromTopLeftOfBoard + +horizontalDirector,
+					coordinate?.yPositionFromTopLeftOfBoard + +verticalDirector,
+				);
+
+				listOfCoordinates.push(coordinateOneStepFromCurrent);
+			});
+		});
+		return listOfCoordinates;
+	}
+
+	isCoordinateOutsidePlayerField(coordinate: DamStoneCoordinate): boolean {
+		return (
+				(coordinate?.xPositionFromTopLeftOfBoard < 0) ||
+				(coordinate?.xPositionFromTopLeftOfBoard >= this.getNumberOfTilesPerBoardRow()) ||
+				(coordinate?.yPositionFromTopLeftOfBoard < 0) ||
+				(coordinate?.yPositionFromTopLeftOfBoard >= this.getNumberOfTilesPerBoardRow())
+			);
+	}
+
+	isOtherStoneAlreadyOnCoordinate(allDamStones: DamStone[], damStoneCoordinate: DamStoneCoordinate): boolean {
+		let isOtherStoneAlreadyOnCoordinate = false;
+
+		allDamStones.forEach((damStone: DamStone) => {
+			if(damStone?.coordinate?.xPositionFromTopLeftOfBoard == damStoneCoordinate?.xPositionFromTopLeftOfBoard &&
+				damStone?.coordinate?.yPositionFromTopLeftOfBoard == damStoneCoordinate?.yPositionFromTopLeftOfBoard
+				){
+				isOtherStoneAlreadyOnCoordinate = true;
+			}
+		});
+		
+		return isOtherStoneAlreadyOnCoordinate;
+	}
+
+	isOneStepWithoutHitInAnyDirectionPossibleForStone(allDamStones: DamStone[], stone: DamStone): boolean {
+		if(!stone?.coordinate){
+			return false;
+		}
+
+		let isOneStepWithoutHitInAnyDirectionPossible = false;
+
+		const coordinatesOneStepFromCurrentStone = 
+			this.getListOfCoordinatesOneStepFromCurrentCoordinate(stone?.coordinate);
+
+		coordinatesOneStepFromCurrentStone.forEach((coordinate: DamStoneCoordinate) => {
+			if(
+				!this.isCoordinateOutsidePlayerField(coordinate) &&
+				!this.isOtherStoneAlreadyOnCoordinate(allDamStones, coordinate)
+			){
+				isOneStepWithoutHitInAnyDirectionPossible = true;
+			}
+		});
+		return isOneStepWithoutHitInAnyDirectionPossible;
 	}
 }

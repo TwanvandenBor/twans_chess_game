@@ -9,6 +9,7 @@
           v-for="(damTile, damTileIndex) in damBoardHelper.getNumberOfTilesPerBoardRow()" :key="damTileIndex"
           :isWhite="damBoardHelper.getIsWhiteTileForCoordinate(damTileRowIndex, damTileIndex)"
           :damStone="damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileRowIndex, damTileIndex))"
+          :isStepPossibleForStoneOnTile="damBoardHelper.isOneStepWithoutHitInAnyDirectionPossibleForStone(data.damStones, damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileRowIndex, damTileIndex)))"
         >
         </dam-tile>
       </section>

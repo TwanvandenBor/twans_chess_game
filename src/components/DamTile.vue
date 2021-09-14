@@ -1,7 +1,11 @@
 <template>
 	<div 
 		class="dam-tile-root"
-		:class="props.isWhite ? 'white-dam-tile' : 'black-dam-tile'"
+		:class="[
+        (props.isWhite ? 'white-dam-tile' : 'black-dam-tile'),
+        (props.isStepPossibleForStoneOnTile ? 'hoverable-tile-step-possible' : null)
+        ]
+      "
 		:style="{
 			minWidth: `${66 / props.maximumDamTilesPerRow}vh`,
 			minHeight: `${66 / props.maximumDamTilesPerRow}vh`,
@@ -25,7 +29,8 @@ export default defineComponent({
   props: {
 	isWhite: { type: Boolean, default: false },
 	maximumDamTilesPerRow: { type: Number, default: 8 },
-	damStone: { type: Object as () => DamStone }
+	damStone: { type: Object as () => DamStone },
+	isStepPossibleForStoneOnTile: { type: Boolean, default: false }
   },
   setup(props) {
     const data = reactive({});
@@ -48,6 +53,10 @@ export default defineComponent({
 }
 .black-dam-tile {
 	background-color: #763D1B;
+}
+
+.hoverable-tile-step-possible:hover {
+	background-color: lightblue;
 }
 
 
