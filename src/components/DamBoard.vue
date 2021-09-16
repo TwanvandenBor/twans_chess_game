@@ -11,7 +11,7 @@
           :damStone="damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex))"
           :tileCoordinate="damBoardHelper.getBoardCoordinateFromXAndY(damTileIndex, damTileRowIndex)"
           :isStepPossibleForStoneOnTile="damBoardHelper.isOneStepWithoutHitInAnyDirectionPossibleForStone(data.damStones, damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex)), data.isWhitePlayersTurn)"
-          :isShowingPossibleStep="data.isShowingPossibleSteps && damBoardHelper.isTileCoordinatePossibleStepForSelectedDamStone(data.damStones, data.damStoneToShowPossibleStepsFor, damBoardHelper.getBoardCoordinateFromXAndY(damTileIndex, damTileRowIndex), data.isWhitePlayersTurn)"
+          :isShowingPossibleStep="data.isShowingPossibleSteps && damBoardHelper.isTileCoordinatePossibleStepForSelectedDamStone(data.damStones, data.damStoneToShowPossibleStepsFor, damBoardHelper.getBoardCoordinateFromXAndY(damTileIndex, damTileRowIndex), data.isWhitePlayersTurn, props.areStonesInTopRowsWhite)"
           v-on:emitShowPossibleSteps="showPossibleSteps"
           v-on:emitMakeStepIfPossible="handlePlayerStepIfPossible"
         >
@@ -30,16 +30,18 @@ import { BoardCoordinate } from "@/model/BoardCoordinate";
 
 export default defineComponent({
   name: 'damBoard',
+  props: {
+	areStonesInTopRowsWhite: { type: Boolean, default: true }
+  },
   components: { 
     DamTile
   },
-  props: {},
-  setup() {
+  setup(props) {
 	const damBoardHelper = new DamBoardHelper();
 	const app = getCurrentInstance();
 
     const data = reactive({
-		damStones: damBoardHelper.getDamStonesForNewGameState(),
+		damStones: damBoardHelper.getDamStonesForNewGameState(props.areStonesInTopRowsWhite),
 		isShowingPossibleSteps: false,
 		damStoneToShowPossibleStepsFor: {} as DamStone,
 		isWhitePlayersTurn: true
@@ -59,7 +61,8 @@ export default defineComponent({
 				data.damStones,
 				data.damStoneToShowPossibleStepsFor,
 				preferedStepCoordinate,
-				data.isWhitePlayersTurn
+				data.isWhitePlayersTurn,
+				props.areStonesInTopRowsWhite
 			);
     }
 
@@ -102,6 +105,7 @@ export default defineComponent({
 
     return {
       data,
+      props,
       damBoardHelper,
       showPossibleSteps,
       handlePlayerStepIfPossible

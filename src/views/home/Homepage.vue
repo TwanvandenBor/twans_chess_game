@@ -9,7 +9,10 @@
     </section>
 
     <timer></timer>
-    <dam-board></dam-board>
+    <dam-board
+      :areStonesInTopRowsWhite="false"
+    >
+    </dam-board>
     <game-panel></game-panel>
 
 	</div>

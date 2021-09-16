@@ -22,9 +22,51 @@ export class DamBoardHelper {
 			);
 	}
 
-	isTileCoordinatePossibleStepForSelectedDamStone(damStones: DamStone[], damStoneToShowPossibleStepsFor: DamStone, tileCoordinateToPossiblyStepTo: BoardCoordinate, isWhitePlayersTurn: boolean): boolean {
+	isStoneTryToMoveStepBackwards(currentStone: DamStone, movingToCoordinate: BoardCoordinate, areStonesInTopRowsWhite: boolean): boolean {
+		if(areStonesInTopRowsWhite){
+			if(
+				currentStone?.isColorWhite &&
+				movingToCoordinate?.yPositionFromTopLeftOfBoard < currentStone?.coordinate?.yPositionFromTopLeftOfBoard
+			){
+				return true;
+			} else if(
+				!currentStone?.isColorWhite &&
+				movingToCoordinate?.yPositionFromTopLeftOfBoard > currentStone?.coordinate?.yPositionFromTopLeftOfBoard
+			){
+				return true;
+			}
+		} else {
+			if(
+				currentStone?.isColorWhite &&
+				movingToCoordinate?.yPositionFromTopLeftOfBoard > currentStone?.coordinate?.yPositionFromTopLeftOfBoard
+			){
+				return true;
+			} else if(
+				!currentStone?.isColorWhite &&
+				movingToCoordinate?.yPositionFromTopLeftOfBoard < currentStone?.coordinate?.yPositionFromTopLeftOfBoard
+			){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	isTileCoordinatePossibleStepForSelectedDamStone(damStones: DamStone[], damStoneToShowPossibleStepsFor: DamStone, tileCoordinateToPossiblyStepTo: BoardCoordinate, isWhitePlayersTurn: boolean, areStonesInTopRowsWhite: boolean): boolean {
 		if(!damStoneToShowPossibleStepsFor?.coordinate){ return false; }
 		if(damStoneToShowPossibleStepsFor?.isColorWhite != isWhitePlayersTurn){ return false; }
+
+		// Validate step backwards if stone is NOT a dam
+		if(!damStoneToShowPossibleStepsFor?.isDam){
+			if(
+				this.isStoneTryToMoveStepBackwards(
+					damStoneToShowPossibleStepsFor,
+					tileCoordinateToPossiblyStepTo,
+					areStonesInTopRowsWhite
+				)
+			){
+				return false;
+			}
+		}
 
 		const possibleCoordinatesToStepToFromSelectedDamStone = this.getListOfPossibleStepCoordinatesOneStepFromCurrentCoordinate(damStoneToShowPossibleStepsFor?.coordinate)
 			.filter((damStoneCoordinate: DamStoneCoordinate) => {
