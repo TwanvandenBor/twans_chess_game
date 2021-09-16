@@ -24,6 +24,7 @@ import { defineComponent, reactive } from "vue";
 import DamTile from "@/components/DamTile.vue";
 import { DamBoardHelper } from "@/helpers/DamBoardHelper";
 import { DamStone } from "@/model/DamStone";
+import { BoardCoordinate } from "@/model/BoardCoordinate";
 
 export default defineComponent({
   name: 'damBoard',

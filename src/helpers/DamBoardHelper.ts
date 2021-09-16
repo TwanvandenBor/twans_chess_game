@@ -1,9 +1,14 @@
 import { DamStone } from "@/model/DamStone";
+import { BoardCoordinate } from "@/model/BoardCoordinate";
 import { DamStoneCoordinate } from "@/model/DamStoneCoordinate";
 
 export class DamBoardHelper {
 	getNumberOfTilesPerBoardRow(): number {
 		return 8;
+	}
+
+	getBoardCoordinateFromXAndY(x: number, y: number): BoardCoordinate {
+		return new BoardCoordinate(x, y);
 	}
 
 	getDamStoneCoordinateFromXAndY(x: number, y: number): DamStoneCoordinate {
@@ -17,7 +22,7 @@ export class DamBoardHelper {
 			);
 	}
 
-	isTileCoordinatePossibleStepForSelectedDamStone(damStones: DamStone[], damStoneToShowPossibleStepsFor: DamStone, tileCoordinateToPossiblyStepTo: DamStoneCoordinate, isWhitePlayersTurn: boolean): boolean {
+	isTileCoordinatePossibleStepForSelectedDamStone(damStones: DamStone[], damStoneToShowPossibleStepsFor: DamStone, tileCoordinateToPossiblyStepTo: BoardCoordinate, isWhitePlayersTurn: boolean): boolean {
 		if(!damStoneToShowPossibleStepsFor?.coordinate){ return false; }
 		if(damStoneToShowPossibleStepsFor?.isColorWhite != isWhitePlayersTurn){ return false; }
 

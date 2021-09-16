@@ -25,10 +25,10 @@
 	</div>
 </template>
 
-
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
 import { DamStone } from "@/model/DamStone";
+import { BoardCoordinate } from "@/model/BoardCoordinate";
 
 export default defineComponent({
   name: 'aboutTheBakeryView',
@@ -36,6 +36,7 @@ export default defineComponent({
 	isWhite: { type: Boolean, default: false },
 	maximumDamTilesPerRow: { type: Number, default: 8 },
 	damStone: { type: Object as () => DamStone },
+	tileCoordinate: { type: Object as () => BoardCoordinate },
 	isStepPossibleForStoneOnTile: { type: Boolean, default: false },
 	isShowingPossibleStep: { type: Boolean, default: false }
   },
