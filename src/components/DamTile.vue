@@ -10,7 +10,7 @@
 			minWidth: `${66 / props.maximumDamTilesPerRow}vh`,
 			minHeight: `${66 / props.maximumDamTilesPerRow}vh`,
         }"
-        @click="emitShowPossibleSteps()"
+        @click="emitShowPossibleSteps(); emitMakeStepIfPossible();"
 	>
 		<section 
 			class="dam-stone-drawing"
@@ -41,7 +41,8 @@ export default defineComponent({
 	isShowingPossibleStep: { type: Boolean, default: false }
   },
   emits: [
-	"emitShowPossibleSteps"
+	"emitShowPossibleSteps",
+	"emitMakeStepIfPossible"
   ],
   setup(props, { emit }) {
     const data = reactive({});
@@ -52,10 +53,15 @@ export default defineComponent({
 		}
     }
 
+    function emitMakeStepIfPossible(): void {
+		emit("emitMakeStepIfPossible", props.tileCoordinate);
+    }
+
     return {
       data,
       props,
-      emitShowPossibleSteps
+      emitShowPossibleSteps,
+      emitMakeStepIfPossible
     };
   }
 });

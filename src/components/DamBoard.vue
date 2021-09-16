@@ -9,9 +9,11 @@
           v-for="(damTile, damTileIndex) in damBoardHelper.getNumberOfTilesPerBoardRow()" :key="damTileIndex"
           :isWhite="damBoardHelper.getIsWhiteTileForCoordinate(damTileIndex, damTileRowIndex)"
           :damStone="damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex))"
+          :tileCoordinate="damBoardHelper.getBoardCoordinateFromXAndY(damTileIndex, damTileRowIndex)"
           :isStepPossibleForStoneOnTile="damBoardHelper.isOneStepWithoutHitInAnyDirectionPossibleForStone(data.damStones, damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex)), data.isWhitePlayersTurn)"
-          :isShowingPossibleStep="data.isShowingPossibleSteps && damBoardHelper.isTileCoordinatePossibleStepForSelectedDamStone(data.damStones, data.damStoneToShowPossibleStepsFor, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex), data.isWhitePlayersTurn)"
+          :isShowingPossibleStep="data.isShowingPossibleSteps && damBoardHelper.isTileCoordinatePossibleStepForSelectedDamStone(data.damStones, data.damStoneToShowPossibleStepsFor, damBoardHelper.getBoardCoordinateFromXAndY(damTileIndex, damTileRowIndex), data.isWhitePlayersTurn)"
           v-on:emitShowPossibleSteps="showPossibleSteps"
+          v-on:emitMakeStepIfPossible="handlePlayerStepIfPossible"
         >
         </dam-tile>
       </section>
@@ -50,10 +52,42 @@ export default defineComponent({
 		data.damStoneToShowPossibleStepsFor = damStone;
     }
 
+    function isClickedTilePossibleStep(preferedStepCoordinate: BoardCoordinate): boolean {
+		return damBoardHelper.isTileCoordinatePossibleStepForSelectedDamStone(
+				data.damStones,
+				data.damStoneToShowPossibleStepsFor,
+				preferedStepCoordinate,
+				data.isWhitePlayersTurn
+			);
+    }
+
+    function updateDamStoneCoordinate(preferedStepCoordinate: BoardCoordinate): void {
+		const indexOfStonesCoordinateBeforeStepIsTaken = data.damStones.findIndex((damStone: DamStone) => {
+				return (
+					damStone?.coordinate?.xPositionFromTopLeftOfBoard == data.damStoneToShowPossibleStepsFor?.coordinate?.xPositionFromTopLeftOfBoard &&
+					damStone?.coordinate?.yPositionFromTopLeftOfBoard == data.damStoneToShowPossibleStepsFor?.coordinate?.yPositionFromTopLeftOfBoard
+				);
+		});
+
+		if(!preferedStepCoordinate?.xPositionFromTopLeftOfBoard){ return; }
+		if(!preferedStepCoordinate?.yPositionFromTopLeftOfBoard){ return; }
+
+		data.damStones[indexOfStonesCoordinateBeforeStepIsTaken].coordinate.xPositionFromTopLeftOfBoard = preferedStepCoordinate.xPositionFromTopLeftOfBoard;
+		data.damStones[indexOfStonesCoordinateBeforeStepIsTaken].coordinate.yPositionFromTopLeftOfBoard = preferedStepCoordinate.yPositionFromTopLeftOfBoard;
+    }
+
+    function handlePlayerStepIfPossible(preferedStepCoordinate: BoardCoordinate): void {
+		if(isClickedTilePossibleStep(preferedStepCoordinate)){
+			updateDamStoneCoordinate(preferedStepCoordinate);
+			data.isWhitePlayersTurn = !data.isWhitePlayersTurn
+		}
+    }
+
     return {
       data,
       damBoardHelper,
-      showPossibleSteps
+      showPossibleSteps,
+      handlePlayerStepIfPossible
     };
   }
 });
