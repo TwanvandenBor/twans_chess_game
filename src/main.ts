@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 import TranslateHelper from "@/I18n/TranslateHelper";
 import { en } from "@/I18n/locales/en.ts";
+import mitt from 'mitt';
 
 const app = createApp(App);
 app.use(store);
@@ -18,3 +19,6 @@ app.use(TranslateHelper, {
   },
   defaultLocale: defaultLocale
 });
+
+const emitter = mitt();
+app.config.globalProperties.$emitter = emitter;

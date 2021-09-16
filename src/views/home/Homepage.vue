@@ -10,6 +10,7 @@
 
     <timer></timer>
     <dam-board></dam-board>
+    <game-panel></game-panel>
 
 	</div>
 </template>
@@ -18,13 +19,15 @@
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
 import DamBoard from "@/components/DamBoard.vue";
+import GamePanel from "@/components/GamePanel.vue";
 import Timer from "@/components/Timer.vue";
 
 export default defineComponent({
   name: 'homepage',
   components: {
     Timer,
-    DamBoard
+    DamBoard,
+    GamePanel
   },
   props: {},
   setup() {

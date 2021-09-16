@@ -22,7 +22,7 @@
 
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, onMounted, getCurrentInstance } from "vue";
 import DamTile from "@/components/DamTile.vue";
 import { DamBoardHelper } from "@/helpers/DamBoardHelper";
 import { DamStone } from "@/model/DamStone";
@@ -36,6 +36,8 @@ export default defineComponent({
   props: {},
   setup() {
 	const damBoardHelper = new DamBoardHelper();
+	const app = getCurrentInstance();
+
     const data = reactive({
 		damStones: damBoardHelper.getDamStonesForNewGameState(),
 		isShowingPossibleSteps: false,
@@ -82,6 +84,21 @@ export default defineComponent({
 			data.isWhitePlayersTurn = !data.isWhitePlayersTurn
 		}
     }
+
+    function restartGame(): void {
+		data.damStones = damBoardHelper.getDamStonesForNewGameState();
+		data.isShowingPossibleSteps = false;
+		data.isWhitePlayersTurn = true;
+    }
+
+    onMounted(() => {
+		app?.appContext?.config?.globalProperties?.$emitter.on('emitRestartGame', () => {
+			restartGame();
+		});
+		app?.appContext?.config?.globalProperties?.$emitter.on('emitPauzeGame', () => {
+			restartGame();
+		});
+    });
 
     return {
       data,
