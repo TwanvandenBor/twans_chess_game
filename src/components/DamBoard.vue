@@ -1,9 +1,9 @@
 <template>
 	<div id="damboard-root">
 		<section 
-        class="dam-tile-row"
-        v-for="(damTileRow, damTileRowIndex) in damBoardHelper.getNumberOfTilesPerBoardRow()" :key="damTileRowIndex"
-      >
+			class="dam-tile-row"
+			v-for="(damTileRow, damTileRowIndex) in damBoardHelper.getNumberOfTilesPerBoardRow()" :key="damTileRowIndex"
+		>
         <dam-tile
           class="dam-tile"
           v-for="(damTile, damTileIndex) in damBoardHelper.getNumberOfTilesPerBoardRow()" :key="damTileIndex"
@@ -23,6 +23,7 @@
 import { defineComponent, reactive } from "vue";
 import DamTile from "@/components/DamTile.vue";
 import { DamBoardHelper } from "@/helpers/DamBoardHelper";
+import { DamStone } from "@/model/DamStone";
 
 export default defineComponent({
   name: 'damBoard',
@@ -33,12 +34,24 @@ export default defineComponent({
   setup() {
 	const damBoardHelper = new DamBoardHelper();
     const data = reactive({
-		damStones: damBoardHelper.getDamStonesForNewGameState()
+		damStones: damBoardHelper.getDamStonesForNewGameState(),
+		isShowingPossibleSteps: false,
+		damStoneToShowPossibleStepsFor: {} as DamStone
     });
+
+    function showPossibleSteps(damStone: DamStone): void {
+		if(data.damStoneToShowPossibleStepsFor == damStone){
+			data.isShowingPossibleSteps = !data.isShowingPossibleSteps;
+		} else {
+			data.isShowingPossibleSteps = true;
+		}
+		data.damStoneToShowPossibleStepsFor = damStone;
+    }
 
     return {
       data,
-      damBoardHelper
+      damBoardHelper,
+      showPossibleSteps
     };
   }
 });

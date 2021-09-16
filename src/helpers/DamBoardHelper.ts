@@ -17,6 +17,31 @@ export class DamBoardHelper {
 			);
 	}
 
+	isTileCoordinatePossibleStepForSelectedDamStone(damStones: DamStone[], damStoneToShowPossibleStepsFor: DamStone, tileCoordinateToPossiblyStepTo: DamStoneCoordinate): boolean {
+		if(!damStoneToShowPossibleStepsFor?.coordinate){ return false; }
+
+		const possibleCoordinatesToStepToFromSelectedDamStone = this.getListOfPossibleStepCoordinatesOneStepFromCurrentCoordinate(damStoneToShowPossibleStepsFor?.coordinate)
+			.filter((damStoneCoordinate: DamStoneCoordinate) => {
+			return (
+				!this.isCoordinateOutsidePlayerField(damStoneCoordinate) &&
+				!this.isOtherStoneAlreadyOnCoordinate(damStones, damStoneCoordinate) 
+			);
+		});
+
+		const isPossibleCoordinateTileCoordinateToPossiblyStepTo = possibleCoordinatesToStepToFromSelectedDamStone.find((coordinate: DamStoneCoordinate) => {
+			return (
+				coordinate?.xPositionFromTopLeftOfBoard == tileCoordinateToPossiblyStepTo?.xPositionFromTopLeftOfBoard &&
+				coordinate?.yPositionFromTopLeftOfBoard == tileCoordinateToPossiblyStepTo?.yPositionFromTopLeftOfBoard
+			);
+        });
+
+		if(isPossibleCoordinateTileCoordinateToPossiblyStepTo){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	getDamStonesForNewGameState(areStonesInTopRowsWhite = false): DamStone[] {
 		const damStones = [];
 
@@ -24,7 +49,7 @@ export class DamBoardHelper {
 			for(const damboardTileInRow of Array(this.getNumberOfTilesPerBoardRow()).keys()){
 
 				// Fill first three rows
-				if(damboardRowNumber < 3){
+				if(damboardTileInRow < 3){
 					if(!this.getIsWhiteTileForCoordinate(
 						damboardRowNumber, damboardTileInRow)){
 
@@ -46,7 +71,7 @@ export class DamBoardHelper {
 				}
 
 				// Fill last three rows
-				if(damboardRowNumber >= (this.getNumberOfTilesPerBoardRow() - 3)){
+				if(damboardTileInRow >= (this.getNumberOfTilesPerBoardRow() - 3)){
 					if(!this.getIsWhiteTileForCoordinate(
 						damboardRowNumber, damboardTileInRow)){
 
@@ -68,6 +93,11 @@ export class DamBoardHelper {
 				}
 			}
 		}
+
+		const filteredDamStones = damStones.filter((damStone: DamStone) => {
+			return !(damStone?.coordinate?.yPositionFromTopLeftOfBoard > 2 && !damStone?.isColorWhite) &&
+			!((damStone?.coordinate?.yPositionFromTopLeftOfBoard < (this.getNumberOfTilesPerBoardRow() - 3)) && damStone?.isColorWhite)
+		});
 		
 		return damStones;
 	}
@@ -86,7 +116,7 @@ export class DamBoardHelper {
 		return damStoneIfAvailable;
 	}
 
-	getListOfCoordinatesOneStepFromCurrentCoordinate(coordinate: DamStoneCoordinate): DamStoneCoordinate[] {
+	getListOfPossibleStepCoordinatesOneStepFromCurrentCoordinate(coordinate: DamStoneCoordinate): DamStoneCoordinate[] {
 		const listOfCoordinates: DamStoneCoordinate[] = [];
 		const directions = [-1, 1];
 
@@ -134,7 +164,7 @@ export class DamBoardHelper {
 		let isOneStepWithoutHitInAnyDirectionPossible = false;
 
 		const coordinatesOneStepFromCurrentStone = 
-			this.getListOfCoordinatesOneStepFromCurrentCoordinate(stone?.coordinate);
+			this.getListOfPossibleStepCoordinatesOneStepFromCurrentCoordinate(stone?.coordinate);
 
 		coordinatesOneStepFromCurrentStone.forEach((coordinate: DamStoneCoordinate) => {
 			if(

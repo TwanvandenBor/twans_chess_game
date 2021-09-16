@@ -10,10 +10,16 @@
 			minWidth: `${66 / props.maximumDamTilesPerRow}vh`,
 			minHeight: `${66 / props.maximumDamTilesPerRow}vh`,
         }"
+        @click="emitShowPossibleSteps()"
 	>
 		<section 
 			class="dam-stone-drawing"
 			:class="props.damStone ? (damStone?.isColorWhite ? 'white-dam-stone' : 'black-dam-stone') : null"
+		>
+		</section>
+		<section 
+			class="dam-stone-drawing possible-step-damstone"
+			v-if="props.isShowingPossibleStep"
 		>
 		</section>
 	</div>
@@ -30,14 +36,25 @@ export default defineComponent({
 	isWhite: { type: Boolean, default: false },
 	maximumDamTilesPerRow: { type: Number, default: 8 },
 	damStone: { type: Object as () => DamStone },
-	isStepPossibleForStoneOnTile: { type: Boolean, default: false }
+	isStepPossibleForStoneOnTile: { type: Boolean, default: false },
+	isShowingPossibleStep: { type: Boolean, default: false }
   },
-  setup(props) {
+  emits: [
+	"emitShowPossibleSteps"
+  ],
+  setup(props, { emit }) {
     const data = reactive({});
+
+    function emitShowPossibleSteps(): void {
+		if(props.damStone){
+			emit("emitShowPossibleSteps", props.damStone);
+		}
+    }
 
     return {
       data,
-      props
+      props,
+      emitShowPossibleSteps
     };
   }
 });
@@ -75,6 +92,11 @@ export default defineComponent({
 	background-color: white;
 }
 .black-dam-stone {
-	background-color: black;	
+	background-color: black;
+}
+.possible-step-damstone {
+	background-color: #E5D3B3;
+	opacity: 0.77;
+	box-shadow: 0 0 8px 0 #E5D3B3;
 }
 </style>
