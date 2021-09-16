@@ -8,6 +8,7 @@
       >
     </section>
 
+    <timer></timer>
     <dam-board></dam-board>
 
 	</div>
@@ -17,10 +18,12 @@
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
 import DamBoard from "@/components/DamBoard.vue";
+import Timer from "@/components/Timer.vue";
 
 export default defineComponent({
   name: 'homepage',
-  components: { 
+  components: {
+    Timer,
     DamBoard
   },
   props: {},
