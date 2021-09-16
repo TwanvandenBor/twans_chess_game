@@ -9,8 +9,8 @@
           v-for="(damTile, damTileIndex) in damBoardHelper.getNumberOfTilesPerBoardRow()" :key="damTileIndex"
           :isWhite="damBoardHelper.getIsWhiteTileForCoordinate(damTileIndex, damTileRowIndex)"
           :damStone="damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex))"
-          :isStepPossibleForStoneOnTile="damBoardHelper.isOneStepWithoutHitInAnyDirectionPossibleForStone(data.damStones, damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex)))"
-          :isShowingPossibleStep="data.isShowingPossibleSteps && damBoardHelper.isTileCoordinatePossibleStepForSelectedDamStone(data.damStones, data.damStoneToShowPossibleStepsFor, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex))"
+          :isStepPossibleForStoneOnTile="damBoardHelper.isOneStepWithoutHitInAnyDirectionPossibleForStone(data.damStones, damBoardHelper.getDamStoneForCoordinateIfAvailable(data.damStones, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex)), data.isWhitePlayersTurn)"
+          :isShowingPossibleStep="data.isShowingPossibleSteps && damBoardHelper.isTileCoordinatePossibleStepForSelectedDamStone(data.damStones, data.damStoneToShowPossibleStepsFor, damBoardHelper.getDamStoneCoordinateFromXAndY(damTileIndex, damTileRowIndex), data.isWhitePlayersTurn)"
           v-on:emitShowPossibleSteps="showPossibleSteps"
         >
         </dam-tile>
@@ -36,7 +36,8 @@ export default defineComponent({
     const data = reactive({
 		damStones: damBoardHelper.getDamStonesForNewGameState(),
 		isShowingPossibleSteps: false,
-		damStoneToShowPossibleStepsFor: {} as DamStone
+		damStoneToShowPossibleStepsFor: {} as DamStone,
+		isWhitePlayersTurn: true
     });
 
     function showPossibleSteps(damStone: DamStone): void {

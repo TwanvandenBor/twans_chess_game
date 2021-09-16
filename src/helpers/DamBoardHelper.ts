@@ -17,8 +17,9 @@ export class DamBoardHelper {
 			);
 	}
 
-	isTileCoordinatePossibleStepForSelectedDamStone(damStones: DamStone[], damStoneToShowPossibleStepsFor: DamStone, tileCoordinateToPossiblyStepTo: DamStoneCoordinate): boolean {
+	isTileCoordinatePossibleStepForSelectedDamStone(damStones: DamStone[], damStoneToShowPossibleStepsFor: DamStone, tileCoordinateToPossiblyStepTo: DamStoneCoordinate, isWhitePlayersTurn: boolean): boolean {
 		if(!damStoneToShowPossibleStepsFor?.coordinate){ return false; }
+		if(damStoneToShowPossibleStepsFor?.isColorWhite != isWhitePlayersTurn){ return false; }
 
 		const possibleCoordinatesToStepToFromSelectedDamStone = this.getListOfPossibleStepCoordinatesOneStepFromCurrentCoordinate(damStoneToShowPossibleStepsFor?.coordinate)
 			.filter((damStoneCoordinate: DamStoneCoordinate) => {
@@ -156,10 +157,9 @@ export class DamBoardHelper {
 		return isOtherStoneAlreadyOnCoordinate;
 	}
 
-	isOneStepWithoutHitInAnyDirectionPossibleForStone(allDamStones: DamStone[], stone: DamStone): boolean {
-		if(!stone?.coordinate){
-			return false;
-		}
+	isOneStepWithoutHitInAnyDirectionPossibleForStone(allDamStones: DamStone[], stone: DamStone, isWhitePlayersTurn: boolean): boolean {
+		if(!stone?.coordinate){ return false; }
+		if(stone?.isColorWhite != isWhitePlayersTurn){ return false; }
 
 		let isOneStepWithoutHitInAnyDirectionPossible = false;
 
